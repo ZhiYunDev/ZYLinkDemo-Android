@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/scanning"
+        android:orderInCategory="101"
+        android:title=""
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/scan"
+        android:orderInCategory="102"
+        android:title="@string/scan"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/setting"
+        android:orderInCategory="103"
+        android:title="@string/setting"
+        app:showAsAction="never"/>
+
+</menu>
