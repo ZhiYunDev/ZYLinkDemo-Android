@@ -6,14 +6,16 @@
     <string name="disconnect">Disconnect</string>
     <string name="setting">Setting</string>
     <string name="jni">JNI</string>
-    <string name="connecting">Connecting ...</string>
+    <string name="connecting">Connecting …</string>
     <string name="connected">Connected</string>
-    <string name="disconnecting">Disconnecting ...</string>
+    <string name="disconnecting">Disconnecting …</string>
     <string name="disconnected">Disconnected</string>
     <string name="show_angle">Show Angle</string>
     <string name="move_to">Move to</string>
     <string name="cancel_move">Cancel move</string>
     <string name="angle">Pitch: %1$.2f, Roll: %2$.2f, Yaw: %3$.2f</string>
+    <string name="phone_mode">Phone Mode</string>
+    <string name="camera_mode">Camera Mode</string>
 
 </resources>
 

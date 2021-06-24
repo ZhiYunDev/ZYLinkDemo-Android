@@ -41,6 +41,9 @@ public class OptionalActivity extends AppCompatActivity  {
         findViewById(R.id.show_angle).setOnClickListener(this::showAngle);
         findViewById(R.id.move_to).setOnClickListener(this::moveTo);
         findViewById(R.id.cancel_move).setOnClickListener(this::cancelMove);
+        // Only for Crane M2
+        findViewById(R.id.phone_mode).setOnClickListener(this::setPhoneMode);
+        findViewById(R.id.camera_model).setOnClickListener(this::setCameraMode);
 
         String identifier = getIntent().getStringExtra(EXTRA_IDENTIFIER);
         device = DeviceManager.getInstance().queryDevice(identifier);
@@ -51,6 +54,22 @@ public class OptionalActivity extends AppCompatActivity  {
         } else {
             Toast.makeText(this, "Device not connected", Toast.LENGTH_SHORT).show();
             finish();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (device != null && !device.isConnected()) {
+            device.connect();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (device != null) {
+            device.disconnect();
         }
     }
 
@@ -68,6 +87,8 @@ public class OptionalActivity extends AppCompatActivity  {
             case Device.NO_CONNECTION:
             default:
                 connection.setText(R.string.disconnected);
+                Msg.show(this, R.string.disconnected);
+                finish();
                 break;
         }
     }
@@ -97,5 +118,15 @@ public class OptionalActivity extends AppCompatActivity  {
 
     private void cancelMove(View view) {
         device.cancelMove();
+    }
+
+    // Only for Crane M2
+    private void setPhoneMode(View view) {
+        device.setPhoneMode();
+    }
+
+    // Only for Crane M2
+    private void setCameraMode(View view) {
+        device.setCameraMode();
     }
 }
