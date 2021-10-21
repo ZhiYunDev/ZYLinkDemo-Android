@@ -1,6 +1,15 @@
 # ZYLink
-ZYLink 是智云移动团队用于控制稳定器的SDK需要申请证书才能使用，此项目用于演示ZYLink的基础使用。
-项目中不含证书，需要证书请联系dev@zhiyun-tech.com获取
+Stabilizer control SDK by ZHIYUN
 
-ZYLink is the SDK used by the Zhiyun mobile team to control the stabilizer. You need to apply for a certificate before you can use it. This project is used to demonstrate the basic use of ZYLink. The project does not contain a certificate, please contact dev@zhiyun-tech.com to obtain a certificate if you need it
+## Install
+- Import aar into your project
+- Add the following dependencies
+    ```
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.polidea.rxandroidble2:rxandroidble:1.11.1'
+    implementation 'com.jakewharton.rx2:replaying-share:2.2.0'
+    ```
+
+## Usage
 

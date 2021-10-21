@@ -52,7 +52,14 @@ public class MainActivity extends AppCompatActivity {
         mScanningMenu = menu.findItem(R.id.scanning);
         mScanMenu = menu.findItem(R.id.scan);
         mScanningMenu.setActionView(R.layout.progress).setVisible(false);
+        startScanBle();
         return true;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        startScanBle();
     }
 
     @Override
@@ -108,6 +115,21 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     String msg = translateKeyType(keyType) + "  " + translateKeyEvent(keyEvent);
+                                    Log.d(TAG,  msg);
+                                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+
+                    // Subscribe to func events
+                    device.setFuncListener(new Device.FuncListener() {
+                        @Override
+                        public void onFuncEvent(int func, int param) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String msg = translateFuncEvent(func, param);
                                     Log.d(TAG,  msg);
                                     Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                                 }
@@ -224,6 +246,10 @@ public class MainActivity extends AppCompatActivity {
                 key = "Failed";
         }
         return key;
+    }
+
+    private String translateFuncEvent(int func, int param) {
+        return func + "  " + param;
     }
 
     private void updateConnectionState(Device device, int state, Button view) {
