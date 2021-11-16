@@ -19,6 +19,7 @@ import com.zhiyun.sdk.util.BTUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -92,10 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     mConnectDevices.add(device);
                 }
                 if (device.isConnected()) {
-                     device.disconnect();
-                    //BleStabilizer stb = (BleStabilizer) device;
-//                    stb.getAngle(null);
-                    //stb.moveTo();
+                    device.disconnect();
                 }
                 else {
                     // Subscribe to the connection status
@@ -125,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
                     // Subscribe to func events
                     device.setFuncListener(new Device.FuncListener() {
                         @Override
-                        public void onFuncEvent(int func, int param) {
+                        public void onFuncEvent(int code, int param) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    String msg = translateFuncEvent(func, param);
+                                    String msg = translateFuncEvent(code, param);
                                     Log.d(TAG,  msg);
                                     Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                                 }
@@ -248,8 +246,8 @@ public class MainActivity extends AppCompatActivity {
         return key;
     }
 
-    private String translateFuncEvent(int func, int param) {
-        return func + "  " + param;
+    private String translateFuncEvent(int code, int param) {
+        return String.format(Locale.getDefault(),"code: %X  param: %d", code, param);
     }
 
     private void updateConnectionState(Device device, int state, Button view) {
