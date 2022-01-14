@@ -125,6 +125,13 @@ public class MainActivity extends AppCompatActivity {
 
                     // Subscribe to func events
                     device.setFuncListener(new Device.FuncListener() {
+
+                        /**
+                         * The device has a button to press.
+                         *
+                         * @param code code
+                         * @param param param
+                         */
                         @Override
                         public void onFuncEvent(int code, int param) {
                             runOnUiThread(new Runnable() {
@@ -137,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
 
+                        /**
+                         * The device has a button to press.
+                         *
+                         * @param events {@link Pair#first} is code, Pair#second is param
+                         */
                         @Override
                         public void onFuncEvent(@NonNull List<Pair<Integer, Integer>> events) {
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {

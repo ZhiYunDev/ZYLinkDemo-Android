@@ -8,4 +8,4 @@ dependencyResolutionManagement {
 }
 include ':app'
 //include(':devicesdk')
-//project(':devicesdk').projectDir = new File('../devicesdk')
+//project(':devicesdk').projectDir = new File('../lib/devicesdk')
