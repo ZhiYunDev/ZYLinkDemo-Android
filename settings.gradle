@@ -7,3 +7,5 @@ dependencyResolutionManagement {
     }
 }
 include ':app'
+//include(':devicesdk')
+//project(':devicesdk').projectDir = new File('../devicesdk')

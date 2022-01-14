@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
 import com.zhiyun.sdk.DeviceManager;
 import com.zhiyun.sdk.device.Device;
@@ -20,6 +22,7 @@ import com.zhiyun.sdk.util.BTUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -133,6 +136,16 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
+
+                        @Override
+                        public void onFuncEvent(@NonNull List<Pair<Integer, Integer>> events) {
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                String collect = events.stream()
+                                        .map(Pair::toString)
+                                        .collect(Collectors.joining(", ", "[", "]"));
+                                Log.d(TAG, "onFuncEvent: " + collect);
+                            }
+                        }
                     });
 
                     // stop scan
@@ -235,10 +248,10 @@ public class MainActivity extends AppCompatActivity {
                 key = "Released";
                 break;
             case Device.KEY_EVENT_PRESS_1S:
-                key = "press1s";
+                key = "press 1s";
                 break;
             case Device.KEY_EVENT_PRESS_3S:
-                key = "press2s";
+                key = "press 2s";
                 break;
             default:
                 key = "Failed";
