@@ -15,7 +15,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Add the certificate path here, only assets file
-        ZYDeviceSDK.init(this, "");
+        ZYDeviceSDK.init(this, "cert.json");
         // or
         // ZYDeviceSDK.init(this, Constants.APP_ID, Constants.KEY, Constants.CERT);
 
