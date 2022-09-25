@@ -3,7 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".OptionalActivity">
+
+    <TextView
+        android:id="@+id/connection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/disconnect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/move_to"
@@ -29,58 +39,59 @@
         android:id="@+id/angle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="164dp"
+        android:minWidth="150dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Pitch: 36.0, Roll: 28.39, Yaw: 190.09" />
 
     <Button
         android:id="@+id/show_angle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="160dp"
+        android:layout_width="120dp"
+        android:layout_height="52dp"
         android:gravity="center"
         android:text="@string/show_angle"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/angle" />
-
-    <TextView
-        android:id="@+id/connection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="177dp"
-        android:text="@string/disconnect"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/phone_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="64dp"
-        android:text="@string/phone_mode"
-        app:layout_constraintBottom_toTopOf="@+id/cancel_move"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/show_angle"
-        app:layout_constraintVertical_bias="0.137" />
+        android:text="@string/phone_mode" />
 
     <Button
         android:id="@+id/camera_model"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/camera_mode"
-        app:layout_constraintBottom_toTopOf="@+id/move_to"
-        app:layout_constraintEnd_toStartOf="@+id/phone_mode"
+        android:text="@string/camera_mode" />
+
+    <Button
+        android:id="@+id/send_data_set_L_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_data_set_l_model" />
+
+    <Button
+        android:id="@+id/send_data_switch_to_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_data_switch_to_horizontal"/>
+
+    <Button
+        android:id="@+id/send_data_switch_to_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_data_switch_to_vertical"/>
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="
+        connection, angle, show_angle, camera_model,phone_mode,move_to,cancel_move,
+        send_data_set_L_model,send_data_switch_to_horizontal,send_data_switch_to_vertical"
+        app:flow_verticalGap="2dp"
+        app:flow_wrapMode="chain"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/show_angle" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

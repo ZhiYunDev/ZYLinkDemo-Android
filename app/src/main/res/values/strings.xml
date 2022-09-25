@@ -16,6 +16,9 @@
     <string name="angle">Pitch: %1$.2f, Roll: %2$.2f, Yaw: %3$.2f</string>
     <string name="phone_mode">Phone Mode</string>
     <string name="camera_mode">Camera Mode</string>
+    <string name="send_data_set_l_model">Send Data Set L Model</string>
+    <string name="send_data_switch_to_horizontal">Send Data Switch To Horizontal</string>
+    <string name="send_data_switch_to_vertical">Send Data Switch To Vertical</string>
 
 </resources>
 
