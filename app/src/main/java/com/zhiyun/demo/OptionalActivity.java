@@ -3,8 +3,11 @@ package com.zhiyun.demo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhiyun.protocol.utils.Arrays;
+import com.zhiyun.protocol.utils.Bits;
 import com.zhiyun.protocol.utils.CRC16;
 import com.zhiyun.protocol.utils.Ids;
 import com.zhiyun.sdk.DeviceManager;
@@ -50,6 +54,22 @@ public class OptionalActivity extends AppCompatActivity {
         findViewById(R.id.send_data_set_L_model).setOnClickListener(this::setLMode);
         findViewById(R.id.send_data_switch_to_horizontal).setOnClickListener(this::setHorizontal);
         findViewById(R.id.send_data_switch_to_vertical).setOnClickListener(this::setVertical);
+        ((EditText) findViewById(R.id.et_content)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateDisplayedCRC(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        findViewById(R.id.bt_send_data).setOnClickListener(this::SendInputPacket);
 
         String identifier = getIntent().getStringExtra(EXTRA_IDENTIFIER);
         device = DeviceManager.getInstance().queryDevice(identifier);
@@ -136,20 +156,43 @@ public class OptionalActivity extends AppCompatActivity {
         device.setCameraMode();
     }
 
+    private byte[] getCRC(byte[] content) {
+        int crc = CRC16.compute(content);
+        return Bits.toBytes(crc, 2, false);
+    }
+
     /**
-     * Sending data to stabilizer (processing CRC and splicing data).
+     * Package data as head+content+CRC.
      *
      * @param head    head data
      * @param content body data
      */
-    private void sendData(byte[] head, byte[] content) {
+    private byte[] packageData(byte[] head, byte[] content) {
         // Take content as the parameter to obtain content+CRC.
         byte[] contentAndCrc = CRC16.crc(content, false);
         // Splice data. The data after splicing is head+content+CRC
-        byte[] sendData = Arrays.concat(head, contentAndCrc);
-        Log.i(TAG, "send Data: " + Arrays.toHexString(sendData));
+        return Arrays.concat(head, contentAndCrc);
+    }
+
+    /**
+     * Sending data to stabilizer
+     *
+     * @param data data
+     */
+    private void sendData(byte[] data) {
+        Log.i(TAG, "send Data: " + Arrays.toHexString(data));
         // send data
-        device.send(sendData);
+        device.send(data);
+    }
+
+    /**
+     * Update the displayed CRC hex string
+     *
+     * @param contentHexStr Hexadecimal string of content
+     */
+    private void updateDisplayedCRC(CharSequence contentHexStr) {
+        byte[] bytes = HexStrings.hexStr2ByteArr(String.valueOf(contentHexStr));
+        ((TextView) findViewById(R.id.tv_crc)).setText(HexStrings.byteArr2HexStr(getCRC(bytes)));
     }
 
     /**
@@ -159,10 +202,11 @@ public class OptionalActivity extends AppCompatActivity {
         byte index = Ids.provideNextBlId();
         // lock mode
         byte mode = 0x01;
-
-        byte[] head = {0x24, 0x3c, 0x08, 0x00};
+        byte[] head = {0x24, 0x3c, 0x08, 0x00}; //0x243c0800
         byte[] content = {0x18, 0x12, index, 0x01, 0x27, (byte) 0x80, mode, 0x00};
-        sendData(head, content);
+
+        byte[] sendData = packageData(head, content);
+        sendData(sendData);
     }
 
     /**
@@ -189,6 +233,21 @@ public class OptionalActivity extends AppCompatActivity {
         byte index = Ids.provideNextBlId();
         byte[] head = {0x24, 0x3c, 0x08, 0x00};
         byte[] content = {0x18, 0x12, index, 0x01, (byte) 0xa1, (byte) 0xc0, orientationHigh, orientationLow};
-        sendData(head, content);
+
+        byte[] sendData = packageData(head, content);
+        sendData(sendData);
+    }
+
+    /**
+     * Send input packet
+     */
+    private void SendInputPacket(View v) {
+        String headHexStr = String.valueOf(((EditText) findViewById(R.id.et_head)).getText());
+        String contentHexStr = String.valueOf(((EditText) findViewById(R.id.et_content)).getText());
+        // Convert the input hexadecimal string to byte array.
+        byte[] headBytes = HexStrings.hexStr2ByteArr(String.valueOf(headHexStr));
+        byte[] contentBytes = HexStrings.hexStr2ByteArr(String.valueOf(contentHexStr));
+        byte[] sendData = packageData(headBytes, contentBytes);
+        sendData(sendData);
     }
 }

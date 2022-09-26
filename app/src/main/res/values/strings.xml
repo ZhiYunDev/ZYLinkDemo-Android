@@ -19,6 +19,12 @@
     <string name="send_data_set_l_model">Send Data Set L Model</string>
     <string name="send_data_switch_to_horizontal">Send Data Switch To Horizontal</string>
     <string name="send_data_switch_to_vertical">Send Data Switch To Vertical</string>
+    <string name="head">Head</string>
+    <string name="content">Content</string>
+    <string name="crc">CRC</string>
+    <string name="enter_head_hint">Enter Head</string>
+    <string name="enter_content_hint">Enter the hexadecimal content</string>
+    <string name="send_data">Send Data</string>
 
 </resources>
 
