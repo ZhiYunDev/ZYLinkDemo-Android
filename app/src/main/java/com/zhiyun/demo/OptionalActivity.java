@@ -3,8 +3,6 @@ package com.zhiyun.demo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -54,22 +52,11 @@ public class OptionalActivity extends AppCompatActivity {
         findViewById(R.id.send_data_set_L_model).setOnClickListener(this::setLMode);
         findViewById(R.id.send_data_switch_to_horizontal).setOnClickListener(this::setHorizontal);
         findViewById(R.id.send_data_switch_to_vertical).setOnClickListener(this::setVertical);
-        ((EditText) findViewById(R.id.et_content)).addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateDisplayedCRC(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
+        findViewById(R.id.tv_crc).setOnClickListener(v -> updateDisplayedCRC());
+        findViewById(R.id.bt_send_data).setOnClickListener(v -> {
+            updateDisplayedCRC();
+            sendInputPacket();
         });
-        findViewById(R.id.bt_send_data).setOnClickListener(this::SendInputPacket);
 
         String identifier = getIntent().getStringExtra(EXTRA_IDENTIFIER);
         device = DeviceManager.getInstance().queryDevice(identifier);
@@ -187,10 +174,9 @@ public class OptionalActivity extends AppCompatActivity {
 
     /**
      * Update the displayed CRC hex string
-     *
-     * @param contentHexStr Hexadecimal string of content
      */
-    private void updateDisplayedCRC(CharSequence contentHexStr) {
+    private void updateDisplayedCRC() {
+        String contentHexStr = String.valueOf(((EditText) findViewById(R.id.et_content)).getText());
         byte[] bytes = HexStrings.hexStr2ByteArr(String.valueOf(contentHexStr));
         ((TextView) findViewById(R.id.tv_crc)).setText(HexStrings.byteArr2HexStr(getCRC(bytes)));
     }
@@ -229,10 +215,10 @@ public class OptionalActivity extends AppCompatActivity {
      * @param orientationHigh High bit of direction parameter
      * @param orientationLow  Low order of direction parameter
      */
-    private void setOrientation(byte orientationHigh, byte orientationLow) {
+    private void setOrientation(byte orientationLow, byte orientationHigh) {
         byte index = Ids.provideNextBlId();
         byte[] head = {0x24, 0x3c, 0x08, 0x00};
-        byte[] content = {0x18, 0x12, index, 0x01, (byte) 0xa1, (byte) 0xc0, orientationHigh, orientationLow};
+        byte[] content = {0x18, 0x12, index, 0x01, (byte) 0xa1, (byte) 0xc0, orientationLow, orientationHigh};
 
         byte[] sendData = packageData(head, content);
         sendData(sendData);
@@ -241,7 +227,7 @@ public class OptionalActivity extends AppCompatActivity {
     /**
      * Send input packet
      */
-    private void SendInputPacket(View v) {
+    private void sendInputPacket() {
         String headHexStr = String.valueOf(((EditText) findViewById(R.id.et_head)).getText());
         String contentHexStr = String.valueOf(((EditText) findViewById(R.id.et_content)).getText());
         // Convert the input hexadecimal string to byte array.
