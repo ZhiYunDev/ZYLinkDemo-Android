@@ -8,7 +8,7 @@ dependencyResolutionManagement {
 }
 include ':app'
 
-if (isDevelopmenting) {
-    include ':devicesdk'
-    project(':devicesdk').projectDir = new File(rootDir, 'library/devicesdk/')
-}
+//if (isDevelopmenting) {
+//    include ':devicesdk'
+//    project(':devicesdk').projectDir = new File(rootDir, 'library/devicesdk/')
+//}
