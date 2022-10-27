@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.zhiyun.protocol.constants.WorkingMode;
 import com.zhiyun.protocol.utils.Arrays;
 import com.zhiyun.protocol.utils.Bits;
 import com.zhiyun.protocol.utils.CRC16;
@@ -64,6 +65,8 @@ public class OptionalActivity extends AppCompatActivity {
             device.setStateListener(this::updateConnectionState);
             boolean connected = device.isConnected();
             updateConnectionState(connected ? Device.TO_BE_CONNECTED : Device.NO_CONNECTION);
+            // working mode changed callback
+            setWorkingModeChangedCallback(device);
         } else {
             Toast.makeText(this, "Device not connected", Toast.LENGTH_SHORT).show();
             finish();
@@ -104,6 +107,43 @@ public class OptionalActivity extends AppCompatActivity {
                 finish();
                 break;
         }
+    }
+
+    private void setWorkingModeChangedCallback(Device device) {
+        device.setWorkingModeChangedCallback(new Callback<WorkingMode>() {
+            @Override
+            public void call(WorkingMode mode) {
+                // PF Pan Follow Mode
+                // L Lock Mode
+                // F Follow Mode
+                // POV POV Mode
+                // GO  PhoneGo Mode
+                // V Vortex Mode
+                switch (mode) {
+                    case PF:
+                        Log.d(TAG, "Pan Follow Mode");
+                        break;
+                    case L:
+                        Log.d(TAG, "Lock Mode");
+                        break;
+                    case F:
+                        Log.d(TAG, "Follow Mode");
+                        break;
+                    case POV:
+                        Log.d(TAG, "POV Mode");
+                        break;
+                    case GO:
+                        Log.d(TAG, "PhoneGo Mode");
+                        break;
+                    case V:
+                        Log.d(TAG, "V Vortex Mode");
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        });
     }
 
     private void showAngle(View view) {

@@ -16,6 +16,9 @@ public class MainApplication extends Application {
         super.onCreate();
         // Add the certificate path here, only assets file
         ZYDeviceSDK.init(this, "cert.json");
+        // Enable debug logging.
+        // If true will print debug log, otherwise no log, Default is false.
+        ZYDeviceSDK.getInstance().enableDebugLogging(true);
         // or
         // ZYDeviceSDK.init(this, Constants.APP_ID, Constants.KEY, Constants.CERT);
 
