@@ -6,8 +6,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
+import com.zhiyun.demo.databinding.ActivityMainBinding;
 import com.zhiyun.sdk.DeviceManager;
 import com.zhiyun.sdk.device.Device;
 import com.zhiyun.sdk.util.BTUtil;
@@ -28,18 +29,19 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private ActivityMainBinding binding;
     boolean isCanning = false;
     MenuItem mScanningMenu;
     MenuItem mScanMenu;
 
-    private ListView mDevices;
     private BleAdapter mBleAdapter;
-    private List<Device> mConnectDevices = new ArrayList<>();
+    private final List<Device> mConnectDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setView();
     }
 
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     device.disconnect();
                 }
                 else {
+                    binding.progress.setVisibility(View.VISIBLE);
                     // Subscribe to the connection status
                     device.setStateListener(new Device.StatusListener() {
                         @Override
@@ -167,8 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        mDevices = findViewById(R.id.devices);
-        mDevices.setAdapter(mBleAdapter);
+        binding.devices.setAdapter(mBleAdapter);
     }
 
     private String translateKeyType(@Device.KeyType int keyType) {
@@ -278,9 +280,11 @@ public class MainActivity extends AppCompatActivity {
     private void updateConnectionState(Device device, int state, Button view) {
         switch (state) {
             case Device.NO_CONNECTION:
+                progress(false);
                 view.setText(R.string.connect);
                 break;
             case Device.TO_BE_CONNECTED:
+                progress(false);
                 view.setText(R.string.disconnect);
 
                 OptionalActivity.startActivity(this, device.getIdentifier());
@@ -289,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
             case Device.TO_BE_MISSED:
             case Device.CONNECTING:
             default:
+                progress(true);
                 break;
         }
     }
@@ -352,5 +357,9 @@ public class MainActivity extends AppCompatActivity {
         DeviceManager.getInstance().cancelScan();
     }
 
+    private void progress(boolean showing) {
+        int visibility = showing ? View.VISIBLE : View.GONE;
+        binding.progress.setVisibility(visibility);
+    }
 }
 
