@@ -1,5 +1,6 @@
 package com.zhiyun.demo;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -188,6 +191,12 @@ public class CheckActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private final ActivityResultLauncher<String> launcher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+        if (!granted) {
+            Toast.makeText(getApplicationContext(), "Please grant location permissions ", Toast.LENGTH_SHORT).show();
+        }
+    });
+
     private void startScanBle() {
 
         if (!BTUtil.isSupportBle()) {
@@ -207,7 +216,7 @@ public class CheckActivity extends AppCompatActivity {
             return;
         }
         if (!BTUtil.isLocationPermissionOk(getApplicationContext())) {
-            Toast.makeText(this, "Please grant location permissions ", Toast.LENGTH_SHORT).show();
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             return;
         }
         // update ui
