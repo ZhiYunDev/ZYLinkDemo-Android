@@ -25,6 +25,7 @@
     <string name="enter_head_hint">Enter Head</string>
     <string name="enter_content_hint">Enter the hexadecimal content</string>
     <string name="send_data">Send Data</string>
-
+    <string name="take_photo">take photo</string>
+    <string name="check_pass">检测通过</string>
 </resources>
 

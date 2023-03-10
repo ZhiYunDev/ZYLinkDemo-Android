@@ -20,14 +20,18 @@
         <activity
             android:name="com.zhiyun.demo.MainActivity"
             android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".OptionalActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".CheckActivity" android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".OptionalActivity" android:screenOrientation="portrait"/>
 
     </application>
 
