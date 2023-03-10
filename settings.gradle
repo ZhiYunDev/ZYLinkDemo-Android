@@ -8,5 +8,5 @@ dependencyResolutionManagement {
 }
 include ':app'
 
-include ':devicesdk'
-project(':devicesdk').projectDir = new File(rootDir, 'library/devicesdk/')
+//include ':devicesdk'
+//project(':devicesdk').projectDir = new File(rootDir, 'library/devicesdk/')

@@ -8,12 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.zhiyun.demo.databinding.ActivityCheckBinding;
 import com.zhiyun.sdk.DeviceManager;
 import com.zhiyun.sdk.device.Device;
 import com.zhiyun.sdk.util.BTUtil;
@@ -26,11 +26,11 @@ import com.zhiyun.sdk.util.BTUtil;
 public class CheckActivity extends AppCompatActivity {
     private static final String TAG = "CheckActivity";
 
+    private ActivityCheckBinding binding;
     boolean isCanning = false;
     MenuItem mScanningMenu;
     MenuItem mScanMenu;
 
-    private ListView mDevices;
     private BleAdapter mBleAdapter;
 
     private Device currentDevice;
@@ -40,15 +40,14 @@ public class CheckActivity extends AppCompatActivity {
     private boolean hasConnectOtherDevice;
     //应用是否在前台
     private boolean isForeGround;
-    //是否在连接中，连接中点击连接无效
-    private boolean isConnecting;
-    //是否在重连中，由于重连中，isConnecting为true，此时应允许连接其他设备连接，故设置此变量
+    //是否在重连中，重连中允许连接其他设备连接，不展示progressBar
     private boolean isRetrying;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check);
+        binding = ActivityCheckBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setView();
     }
 
@@ -107,21 +106,17 @@ public class CheckActivity extends AppCompatActivity {
                 connect(device, view);
             }
         };
-        mDevices = findViewById(R.id.lv_devices);
-        mDevices.setAdapter(mBleAdapter);
-        findViewById(R.id.btn_move).setOnClickListener(this::moveTo);
-        findViewById(R.id.btn_photo).setOnClickListener(this::takePhoto);
+        binding.lvDevices.setAdapter(mBleAdapter);
+        binding.btnMove.setOnClickListener(this::moveTo);
+        binding.btnPhoto.setOnClickListener(this::takePhoto);
     }
 
     private void connect(Device device, Button view) {
-        if (isConnecting && !isRetrying) {
-            return;
-        }
         //用户试图连接其他设备
         if (!device.equals(currentDevice)) {
             hasConnectOtherDevice = true;
         }
-        if (currentDevice != null && currentDevice.isConnected() ) {
+        if (currentDevice != null) {
             currentDevice.disconnect();
         }
         //用户主动断开连接
@@ -129,6 +124,7 @@ public class CheckActivity extends AppCompatActivity {
             device.disconnect();
             hasConnectOtherDevice = true;
         } else {
+            progress(true);
             // Subscribe to the connection status
             device.setStateListener(state -> {
                 if (view != null) {
@@ -142,30 +138,32 @@ public class CheckActivity extends AppCompatActivity {
             device.connect();
         }
     }
+
     private void updateConnectionState(Device device, int state, Button view) {
         switch (state) {
             case Device.NO_CONNECTION:
                 view.setText(R.string.connect);
-                findViewById(R.id.sv_func).setVisibility(View.GONE);
+                binding.svFunc.setVisibility(View.GONE);
                 if (!hasConnectOtherDevice && isForeGround) {
                     device.connect();
                     isRetrying = true;
                 }
-                isConnecting = false;
+                progress(false);
                 break;
             case Device.TO_BE_CONNECTED:
                 isRetrying = false;
                 hasConnectOtherDevice = false;
                 view.setText(R.string.disconnect);
-                showFuncView(Utils.kindOfDevice(device.getModelName()), findViewById(R.id.sv_func), findViewById(R.id.btn_photo));
+                showFuncView(Utils.kindOfDevice(device.getModelName()), binding.svFunc, binding.btnPhoto);
                 currentDevice = device;
-                isConnecting = false;
+                progress(false);
                 break;
             case Device.TO_BE_MISSED:
             case Device.CONNECTING:
-                isConnecting = true;
-                break;
             default:
+                if (!isRetrying) {
+                    progress(true);
+                }
                 break;
         }
     }
@@ -240,6 +238,11 @@ public class CheckActivity extends AppCompatActivity {
         isCanning = false;
         // cancel scan
         DeviceManager.getInstance().cancelScan();
+    }
+
+    private void progress(boolean showing) {
+        int visibility = showing ? View.VISIBLE : View.GONE;
+        binding.progress.setVisibility(visibility);
     }
 
     private void moveTo(View view) {
