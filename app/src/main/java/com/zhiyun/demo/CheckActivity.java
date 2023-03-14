@@ -271,7 +271,9 @@ public class CheckActivity extends AppCompatActivity {
         });
     }
 
+    private final byte[] CMD_FUNC_TAKE_PHOTO = {0x24, 0x3c, 0x0b, 0x00, 0x18, 0x18, 0x1a, 0x07, 0x00, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x04, 0x3a};
+
     private void takePhoto(View view) {
-        // TODO: 2023/3/10 拍照
+        currentDevice.send(CMD_FUNC_TAKE_PHOTO);
     }
 }

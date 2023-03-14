@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZYSDK</string>
+    <string name="app_name">智云设备蓝牙检测工具</string>
     <string name="scan">Scan</string>
     <string name="stop">Stop</string>
     <string name="connect">Connect</string>
