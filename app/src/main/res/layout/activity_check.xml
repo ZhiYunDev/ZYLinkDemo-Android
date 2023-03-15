@@ -22,24 +22,76 @@
         app:layout_constraintTop_toBottomOf="@id/lv_devices"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/btn_move"
+                android:id="@+id/btn_move_pitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/move_to"/>
+                android:text="@string/move_pitch_forward"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <Button
+                android:id="@+id/btn_move_roll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/move_roll_forward"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/btn_move_pitch"
+                app:layout_constraintTop_toTopOf="@id/btn_move_pitch"/>
+
+            <Button
+                android:id="@+id/btn_move_yaw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/move_yaw_forward"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/btn_move_roll"
+                app:layout_constraintTop_toTopOf="@id/btn_move_pitch"/>
+
+            <Button
+                android:id="@+id/btn_move_pitch_backward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/move_pitch_backward"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@id/btn_move_pitch"
+                app:layout_constraintTop_toBottomOf="@id/btn_move_pitch"/>
+
+            <Button
+                android:id="@+id/btn_move_roll_backward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/move_roll_backward"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/btn_move_pitch_backward"
+                app:layout_constraintTop_toTopOf="@id/btn_move_pitch_backward"/>
+
+            <Button
+                android:id="@+id/btn_move_yaw_backward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/move_yaw_backward"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/btn_move_roll_backward"
+                app:layout_constraintTop_toTopOf="@id/btn_move_pitch_backward"/>
 
             <Button
                 android:id="@+id/btn_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/take_photo"/>
+                android:text="@string/take_photo"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@id/btn_move_pitch_backward"
+                app:layout_constraintTop_toBottomOf="@id/btn_move_pitch_backward"/>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <Button

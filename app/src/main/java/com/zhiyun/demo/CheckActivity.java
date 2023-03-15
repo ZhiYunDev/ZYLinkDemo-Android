@@ -1,12 +1,13 @@
 package com.zhiyun.demo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import com.zhiyun.demo.databinding.ActivityCheckBinding;
 import com.zhiyun.sdk.DeviceManager;
 import com.zhiyun.sdk.device.Device;
 import com.zhiyun.sdk.util.BTUtil;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * @author sjw
@@ -37,7 +40,6 @@ public class CheckActivity extends AppCompatActivity {
     private BleAdapter mBleAdapter;
 
     private Device currentDevice;
-    private boolean increase;
 
     //用户主动断开连接或者连接其他设备置true，不进行自动重连
     private boolean hasConnectOtherDevice;
@@ -45,6 +47,8 @@ public class CheckActivity extends AppCompatActivity {
     private boolean isForeGround;
     //是否在重连中，重连中允许连接其他设备连接，不展示progressBar
     private boolean isRetrying;
+
+    private Disposable disposable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,7 +105,7 @@ public class CheckActivity extends AppCompatActivity {
         }
         return true;
     }
-
+    @SuppressLint("ClickableViewAccessibility")
     private void setView() {
         mBleAdapter = new BleAdapter() {
             @Override
@@ -110,8 +114,40 @@ public class CheckActivity extends AppCompatActivity {
             }
         };
         binding.lvDevices.setAdapter(mBleAdapter);
-        binding.btnMove.setOnClickListener(this::moveTo);
         binding.btnPhoto.setOnClickListener(this::takePhoto);
+
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.performClick();
+                        switch (v.getId()) {
+                            case R.id.btn_move_pitch: movePitchForward(); break;
+                            case R.id.btn_move_roll: moveRollForward(); break;
+                            case R.id.btn_move_yaw: moveYawForward(); break;
+                            case R.id.btn_move_pitch_backward: movePitchBackWard(); break;
+                            case R.id.btn_move_roll_backward: moveRollBackWard(); break;
+                            case R.id.btn_move_yaw_backward: moveYawBackWard(); break;
+                            default: break;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        cancelMove();
+                        break;
+                    default: break;
+                }
+                return false;
+            }
+        };
+
+        binding.btnMovePitch.setOnTouchListener(touchListener);
+        binding.btnMoveRoll.setOnTouchListener(touchListener);
+        binding.btnMoveYaw.setOnTouchListener(touchListener);
+        binding.btnMovePitchBackward.setOnTouchListener(touchListener);
+        binding.btnMoveRollBackward.setOnTouchListener(touchListener);
+        binding.btnMoveYawBackward.setOnTouchListener(touchListener);
     }
 
     private void connect(Device device, Button view) {
@@ -254,21 +290,47 @@ public class CheckActivity extends AppCompatActivity {
         binding.progress.setVisibility(visibility);
     }
 
-    private void moveTo(View view) {
-        currentDevice.getAngle((pitch, roll, yaw) -> {
-            // yaw move to yaw+30
-            move(pitch, roll, increase ? yaw + 30 : yaw - 30);
-        });
+    private void movePitchForward() {
+        movePitchAtSomeRate(1f);
     }
 
-    private void move(float pitch, float roll, float yaw) {
-        int durationMs = 5000;
-        currentDevice.moveTo(pitch, roll, yaw, durationMs, completed -> {
-            Log.d(TAG, completed ? "Move completed" : "Move failed");
-            if (completed) {
-                increase = !increase;
-            }
-        });
+    private void movePitchBackWard() {
+        movePitchAtSomeRate(-1f);
+    }
+
+    private void moveRollForward() {
+        moveRollAtSomeRate(1f);
+    }
+
+    private void moveRollBackWard() {
+        moveRollAtSomeRate(-1f);
+    }
+
+    private void moveYawForward() {
+        moveYawAtSomeRate(1f);
+    }
+
+    private void moveYawBackWard() {
+        moveYawAtSomeRate(-1f);
+    }
+
+    private void movePitchAtSomeRate(float rate) {
+        disposable = currentDevice.movePitchAtRate(rate).subscribe();
+    }
+
+    private void moveRollAtSomeRate(float rate) {
+        disposable = currentDevice.moveRollAtRate(rate).subscribe();
+    }
+
+    private void moveYawAtSomeRate(float rate) {
+        disposable = currentDevice.moveYawAtRate(rate).subscribe();
+    }
+
+    private void cancelMove() {
+        if (disposable != null) {
+            disposable.dispose();
+            disposable = null;
+        }
     }
 
     private final byte[] CMD_FUNC_TAKE_PHOTO = {0x24, 0x3c, 0x0b, 0x00, 0x18, 0x18, 0x1a, 0x07, 0x00, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x04, 0x3a};

@@ -27,5 +27,11 @@
     <string name="send_data">Send Data</string>
     <string name="take_photo">take photo</string>
     <string name="check_pass">检测通过</string>
+    <string name="move_pitch_forward">move pitch(+)</string>
+    <string name="move_roll_forward">move roll(+)</string>
+    <string name="move_yaw_forward">move yaw(+)</string>
+    <string name="move_pitch_backward">move pitch(-)</string>
+    <string name="move_roll_backward">move roll(-)</string>
+    <string name="move_yaw_backward">move yaw(-)</string>
 </resources>
 
